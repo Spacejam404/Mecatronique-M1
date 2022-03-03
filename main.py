@@ -286,7 +286,7 @@ class SimpleRobotControl:
         angle = a-b
         # use the modulopi or modulo180 from hexapod kinematics
         # TODO
-        d = modulopi(angle) * R # radius * angle = distance de l'arc de cercle parcouru
+        d = modulopi(angle) * R # radius * angle = distance de l'arc de cercle parcouru en m
         return d 
 
 
