@@ -173,6 +173,7 @@ class SimpleRobotControl:
                 self.draw_robot(m=fake_m, fake=True)
 
             self.draw_state()
+            
             # print(self.m)
             t = pygame.time.get_ticks() / 1000.0 - self.t0
             linear_speed, rotation_speed = self.m.dk()
