@@ -102,3 +102,4 @@ class Model(object):
         self.y = self.y + y_m  
         self.alpha = self.alpha + dAlpha  
 
+    

@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+from cv2 import sqrt
 import pygame
 import random, math
 import pygame.draw
@@ -11,6 +12,10 @@ import motor
 import model
 from constants import *
 
+def AlKashi(a,b,alpha): # don't know why but can't use it if below in the code even when well indented
+                        # could have placed it inside another function but may reuse it later
+        c = math.sqrt(a**2 + b**2 - 2*b*c*math.cos(alpha))
+        return c  
 
 class SimpleRobotControl:
     def __init__(self):
@@ -33,6 +38,8 @@ class SimpleRobotControl:
         self.font = pygame.font.SysFont("monospace", 30)
         self.small_font = pygame.font.SysFont("monospace", 20)
         self.screen.fill(BLACK)
+
+
 
     def get_mode(self):
         return self.control_modes[self.control_mode_id]
@@ -247,7 +254,7 @@ class SimpleRobotControl:
             pygame.display.update()
             # That juicy 60 Hz :D
             self.clock.tick(1 / self.update_period)
-
+    
     def asserv(self, m=None):
         """Sets the speeds of the 2 motors to get the robot to its destination point
         """
@@ -268,12 +275,13 @@ class SimpleRobotControl:
         m.m1.speed = m1_speed
         m.m2.speed = m2_speed
 
-        
+      
     
 
     def angle_diff(self, a, b):
         """Returns the smallest distance between 2 angles
         """
+        angle = a-b
         def modulopi(angle):#smallest angle between two given ones
             if -math.pi < angle < math.pi:
                 return angle
@@ -283,11 +291,15 @@ class SimpleRobotControl:
                 return -math.pi * 2 + angle
 
             return angle
-        angle = a-b
+        
         # use the modulopi or modulo180 from hexapod kinematics
         # TODO
-        d = modulopi(angle) * R # radius * angle = distance de l'arc de cercle parcouru en m
-        return d 
+        alpha = modulopi(angle)
+        cosx = math.cos(alpha)*R
+        sinx = math.sin(alpha)*R
+        d = AlKashi(cosx,sinx,alpha)
+        
+        return d
 
 
 
