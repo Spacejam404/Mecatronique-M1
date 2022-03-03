@@ -21,6 +21,7 @@ class SimpleRobotControl:
         self.m.y_goal = 0.05
         self.mode = self.get_mode()
         self.clock = pygame.time.Clock()
+    
         self.t0 = pygame.time.get_ticks() / 1000.0
         self.is_artist = False
         self.update_period = 1 / 60.0

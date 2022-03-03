@@ -82,7 +82,7 @@ class Model(object):
             dt {float} -- Travel time in seconds
         """
         # Going from wheel speeds to robot speed
-        linear_speed, rotation_speed = self.dk(self.m1.speed, self.m2.speed)
+        linear_speed, rotation_speed = self.dk()
         dp = linear_speed * dt
         # TODO
         if rotation_speed !=0:
