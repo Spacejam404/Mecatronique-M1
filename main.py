@@ -43,7 +43,7 @@ class SimpleRobotControl:
     def draw_robot(self, m=None, fake=False):
         if m == None:
             m = self.m
-        # Usually, we have X in front of us and Y to the left. Let's keep that : y = -y, theta = theta-pi/2
+        # Usually, we have X in front of us and Y to the left. Let's keep that : y = -y, alpha = alpha-pi/2
         center_pos = [
             int(m.x * METERS_TO_PIXEL + WINCENTER[0]),
             int(-m.y * METERS_TO_PIXEL + WINCENTER[1]),
@@ -56,17 +56,17 @@ class SimpleRobotControl:
         pygame.draw.circle(self.screen, color, center_pos, int(size), 0)
 
         r = m.l / 2.0
-        theta = m.theta - math.pi / 2
+        alpha = m.alpha - math.pi / 2
         wheel_pos = [
             int(
                 m.x * METERS_TO_PIXEL
                 + WINCENTER[0]
-                + r * METERS_TO_PIXEL * math.cos(theta)
+                + r * METERS_TO_PIXEL * math.cos(alpha)
             ),
             int(
                 -m.y * METERS_TO_PIXEL
                 + WINCENTER[1]
-                - r * METERS_TO_PIXEL * math.sin(theta)
+                - r * METERS_TO_PIXEL * math.sin(alpha)
             ),
         ]
         color = WHEEL_COLOR
@@ -80,18 +80,18 @@ class SimpleRobotControl:
             int(
                 m.x * METERS_TO_PIXEL
                 + WINCENTER[0]
-                - r * METERS_TO_PIXEL * math.cos(theta)
+                - r * METERS_TO_PIXEL * math.cos(alpha)
             ),
             int(
                 -m.y * METERS_TO_PIXEL
                 + WINCENTER[1]
-                + r * METERS_TO_PIXEL * math.sin(theta)
+                + r * METERS_TO_PIXEL * math.sin(alpha)
             ),
         ]
         pygame.draw.circle(self.screen, color, wheel_pos, int(size), 0)
 
     def draw_goal(self):
-        # Usually, we have X in front of us and Y to the left. Let's keep that : y = -y, theta = theta-pi/2
+        # Usually, we have X in front of us and Y to the left. Let's keep that : y = -y, alpha = alpha-pi/2
         center_pos = [
             int(self.m.x_goal * METERS_TO_PIXEL + WINCENTER[0]),
             int(-self.m.y_goal * METERS_TO_PIXEL + WINCENTER[1]),
@@ -173,7 +173,7 @@ class SimpleRobotControl:
                 self.draw_robot(m=fake_m, fake=True)
 
             self.draw_state()
-            
+
             # print(self.m)
             t = pygame.time.get_ticks() / 1000.0 - self.t0
             linear_speed, rotation_speed = self.m.dk()
