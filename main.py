@@ -254,23 +254,44 @@ class SimpleRobotControl:
         if m == None:
             m = self.m
         distance = math.sqrt(
-            (m.x_goal - m.x) * (m.x_goal - m.x) + (m.y_goal - m.y) * (m.y_goal - m.y)
+            (m.x_goal - m.x) * (m.x_goal - m.x) + (m.y_goal - m.y) * (m.y_goal - m.y) # distance entre x et y / x_goal et y_goal
         )
 
         # TODO
-        local_speed = 0
+        if distance == 0:
+            local_speed = 0
+        else:
+            local_speed = distance * 0.1
         local_turn = 0
 
         m1_speed, m2_speed = m.ik(local_speed, local_turn)
         m.m1.speed = m1_speed
         m.m2.speed = m2_speed
 
+        
+    
+
     def angle_diff(self, a, b):
         """Returns the smallest distance between 2 angles
         """
+        def modulopi(angle):#smallest angle between two given ones
+            if -math.pi < angle < math.pi:
+                return angle
+
+            angle = angle % (math.pi * 2)
+            if angle > math.pi:
+                return -math.pi * 2 + angle
+
+            return angle
+        angle = a-b
+        # use the modulopi or modulo180 from hexapod kinematics
         # TODO
-        d = 0
-        return d
+        d = modulopi(angle) * R # radius * angle = distance de l'arc de cercle parcouru
+        return d 
+
+
+
+
 
 
 def main():

@@ -49,9 +49,9 @@ class Model(object):
             rotational_speed {float} -- Rotational speed (rad/s)
         
         Returns:
-            float -- Speed of motor1 (m/s), speech of motor2 (m/s)
+            float -- Speed of motor1 (m/s), speed of motor2 (m/s)
         """
-        # TODO
+        
         m1_speed = linear_speed - rotational_speed * (L/2)
         m2_speed = linear_speed + rotational_speed * (L/2)
         return m1_speed, m2_speed
@@ -67,8 +67,8 @@ class Model(object):
         Returns:
             float -- linear speed (m/s), rotational speed (rad/s)
         """
-        # TODO
-        # mettre self.m1_speed (et m2) et gérer si m1 et m2 = None
+        
+        
         linear_speed = (self.m1.speed + self.m2.speed)/2
         rotation_speed = (self.m1.speed - self.m2.speed)/self.l
         return linear_speed, rotation_speed
@@ -86,8 +86,8 @@ class Model(object):
         dp = linear_speed * dt
         # TODO
         if rotation_speed !=0:
-            dx = (dp/self.alpha) * math.sin(self.alpha)
-            dy = (dp/self.alpha) * (1-math.cos(self.alpha))
+            dx = (dp/self.alpha) * math.sin(self.alpha) #distance (m)
+            dy = (dp/self.alpha) * (1-math.cos(self.alpha)) #distance parcourue (m)
 
         else:
             dx = dp
@@ -96,9 +96,9 @@ class Model(object):
         # alpha = rotational_speed * dt (distance)
         x_m = dx * math.cos(self.alpha) - dy * math.sin(rotation_speed * dt)
         y_m = dx * math.sin(self.alpha) + dy * math.cos(rotation_speed * dt)
-
+        dAlpha = rotation_speed * dt
         # Updating the robot position
-        self.x = self.x + x_m  # TODO
-        self.y = self.y + y_m  # TODO
-        self.alpha = self.alpha + 0  # TODO
+        self.x = self.x + x_m  
+        self.y = self.y + y_m  
+        self.alpha = self.alpha + dAlpha  
 
