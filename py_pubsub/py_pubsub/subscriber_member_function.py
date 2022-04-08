@@ -12,10 +12,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from time import time
+
 import rclpy
 import math
 from rclpy.node import Node
-
+from geometry_msgs.msg import PoseStamped
+from foxy_nav2_navigator.nav2_simple_commander.robot_navigator import BasicNavigator, NavigationResult
 from sensor_msgs.msg import LaserScan
 from geometry_msgs.msg import Twist
 
@@ -33,6 +36,40 @@ class MinimalSubscriber(Node):
             self.listener_callback,
             10)
         self.subscription  # prevent unused variable warning
+
+    def goTo(self):
+        navigator = BasicNavigator()
+        navigator.changeMap('~$HOME/anthony/B2__map.yaml')
+        navigator.waitUntilNav2Active()
+        goal_poses = []
+        
+        goal_pose = PoseStamped()
+        goal_pose.header.frame_id = 'map'
+        goal_pose.header.stamp = navigator.get_clock().now().to_msg()
+        goal_pose.pose.position.x = 9.44
+        goal_pose.pose.position.y = -8.45
+        goal_pose.pose.position.z = 0.20
+        goal_pose.pose.orientation.x = 0.0
+        goal_pose.pose.orientation.y = 0.0
+        goal_pose.pose.orientation.z = 0.0
+        goal_pose.pose.orientation.w = 1.0
+        goal_poses.append(goal_pose)
+
+        navigator.goThroughPoses(goal_poses)
+    
+        result = navigator.getResult()
+    
+        if result == NavigationResult.SUCCEEDED:
+            navigator.lifecycleShutdown()
+            return'Goal succeeded!'
+        elif result == NavigationResult.CANCELED:
+            return'Goal was canceled!'
+        elif result == NavigationResult.FAILED:
+            return'Goal failed!'
+        else:
+            return'Goal has an invalid return status!'
+
+   
 
     def listener_callback(self, msg):
        # self.get_logger().info ('I heard: "%s"' % msg)
@@ -88,10 +125,30 @@ class MinimalSubscriber(Node):
         
             print('delta_x ={}, delta_y ={}'.format(delta_x,delta_y))    
         print('lin_vel ={}, rot_vel ={}'.format(self.lin_vel, self.rot_vel))    
+        self.publisher.publish(msg_twist)
+        
+        
+        if self.lin_vel != 0 or self.rot_vel != 0: 
+            timer = time()
+            if i!=0:
+                i=0
+        else:
+            timer = time()
+            
+            if i == 0:
+                oldtime = timer
+                i =1
+            if timer - oldtime >= 3:
+                MinimalSubscriber.goTo()
+                
+             #This should end the "Follow-me" part of the code after 3sec of inactivity
+            #should call a navigation to position fucntion 
+            #position final tel antho --> go to coordonate
 
-      
 
-        self.publisher.publish(msg_twist) 
+        
+
+         
         
 
 
@@ -105,7 +162,7 @@ class MinimalSubscriber(Node):
         # If valeur_absolue_bari_x ou bari_y > 0.5m alors 
         # Robot avance de r vers theta_moy
 
-
+    
 
 
 def main(args=None):
@@ -124,3 +181,6 @@ def main(args=None):
 
 if __name__ == '__main__':
     main()
+
+
+# change some parameters to avoid collisions w/ obstacles in sight
